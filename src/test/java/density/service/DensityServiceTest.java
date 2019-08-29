@@ -1,6 +1,7 @@
 package density.service;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,8 +10,9 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import density.model.Poi;
-import density.service.impl.DensityServiceImpl;
+import density.model.Zone;
 import density.service.helpers.ZoneBuilder;
+import density.service.impl.DensityServiceImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DensityServiceTest {
@@ -37,14 +39,18 @@ public class DensityServiceTest {
 
     @Test
     public void densest() {
+        List<Zone> zonesExpected = Arrays.asList(ZoneBuilder.createZone(-2.5, -2, 38, 38.5),
+                ZoneBuilder.createZone(6.5, 7, -7, -6.5));
+        Assert.assertArrayEquals(zonesExpected.toArray(new Zone[zonesExpected.size()]), densityService.densest(2).toArray());
+    }
+
+    @Test
+    public void densest_size() {
         Assert.assertEquals(2, densityService.densest(2).size());
         Assert.assertEquals(3, densityService.densest(3).size());
         Assert.assertEquals(0, densityService.densest(0).size());
         Assert.assertEquals(0, densityService.densest(-1).size());
         Assert.assertEquals(8, densityService.densest(9).size());
-
-        Assert.assertArrayEquals(Arrays.asList(ZoneBuilder.createZone(6.5, 7, -7, -6.5),
-                ZoneBuilder.createZone(-2, -1.5, 37.5, 38)).toArray(), densityService.densest(2).toArray());
     }
 
 }

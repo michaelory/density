@@ -18,22 +18,26 @@ public class ZoneBuilder {
 
     public static Zone createZone(double lat, double lon) {
         Zone zone = new Zone();
-        double roundLat = round(lat);
-        double roundLon = round(lon);
-        zone.setMinLat(roundLat < 0 ? roundLat : min(roundLat));
-        zone.setMaxLat(roundLat < 0 ? min(roundLat) : roundLat);
-        zone.setMinLon(roundLon < 0 ? roundLon : min(roundLon));
-        zone.setMaxLon(roundLon < 0 ? min(roundLon) : roundLon);
+        double maxLat = max(lat);
+        double maxLon = max(lon);
+        zone.setMinLat(maxLat < 0 ? maxLat : min(maxLat));
+        zone.setMaxLat(maxLat < 0 ? min(maxLat) : maxLat);
+        zone.setMinLon(maxLon < 0 ? maxLon : min(maxLon));
+        zone.setMaxLon(maxLon < 0 ? min(maxLon) : maxLon);
         return zone;
     }
 
     static double min(double number) {
-        return number < 0 ? number + 0.5 : number - 0.5;
-    }
-
-    static double round(double number) {
         String numberStr = String.valueOf(number);
         numberStr = numberStr.substring(numberStr.indexOf('.') + 1);
-        return Integer.valueOf(numberStr) == 5 ? number : Math.round(number);
+        if (Integer.valueOf(numberStr) == 5)
+            return number;
+        return Integer.valueOf(numberStr) < 5 ? number - Double.valueOf("0." + numberStr) : Math.round(number) - 0.5;
+    }
+
+    static double max(double number) {
+        String numberStr = String.valueOf(number);
+        numberStr = numberStr.substring(numberStr.indexOf('.') + 1);
+        return Integer.valueOf(numberStr) < 5 ? number - Double.valueOf("0." + numberStr) + 0.5 : Math.round(number);
     }
 }
